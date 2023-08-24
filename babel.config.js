@@ -8,7 +8,10 @@ module.exports = function (api) {
           moduleName: "@env",
           path: ".env.local",
         }
-      ]
+      ],
+      '@babel/plugin-transform-flow-strip-types',
+      '@babel/plugin-proposal-class-properties',
+      '@babel/plugin-proposal-private-methods',
     ]
   };
 };

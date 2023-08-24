@@ -3,9 +3,12 @@ import React from 'react'
 import tw from 'twrnc'
 import { Icon } from '@rneui/base';
 import { useNavigation } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
+import { selectOrigin } from '../features/navSlice';
 
 const NavOptions = () => {
     const navigation = useNavigation();
+    const origin = useSelector(selectOrigin);
     const data = [
         {
             id: "1",
@@ -14,7 +17,7 @@ const NavOptions = () => {
             screen: "Map"
         },
         {
-            id: "2", 
+            id: "2",
             title: "Porter",
             image: "https://cdn-icons-png.flaticon.com/512/2830/2830175.png",
             screen: "Map",
@@ -27,8 +30,8 @@ const NavOptions = () => {
             horizontal={true}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
-                <TouchableOpacity style={tw`p-1 bg-gray-200 m-1`} onPress={() => navigation.navigate(item.screen)}>
-                    <View>
+                <TouchableOpacity disabled={!origin} style={tw`p-1 bg-gray-200 m-1`} onPress={() => navigation.navigate(item.screen)}>
+                    <View style={origin ? tw`opacity-100'` : tw`opacity-20`}>
                         <Image
                             source={{
                                 uri: item.image
