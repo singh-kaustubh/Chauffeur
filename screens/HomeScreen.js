@@ -1,22 +1,29 @@
 import { View, Text, SafeAreaView, Image } from 'react-native';
-import React from 'react';
+import React, { useEffect } from 'react';
 import tw from 'twrnc';
 import NavOptions from '../components/NavOptions';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { GOOGLE_MAPS_APIKEY } from "@env";
 import { useDispatch } from 'react-redux';
-import { setOrigin, setDestination } from '../features/navSlice';
+import { setOrigin, setDestination, setTravelTimeInfo } from '../features/navSlice';
 import NavFavourite from '../components/NavFavourites';
 
 const HomeScreen = () => {
     const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(setOrigin(null));
+        dispatch(setDestination(null));
+        setTravelTimeInfo(null);
+    }, [])
     return (
         <SafeAreaView style={tw`bg-white h-full`}>
             <View style={tw`p-5`}>
-                <Image source={require('../assets/logo.png')}
-                    resizeMode='contain'
-                    style={tw`w-30 h-30 ios:mx-4`}
-                />
+                <View style={tw`w-full flex-row justify-end items-center`}>
+                    <Image source={require('../assets/logo.png')}
+                        resizeMode='contain'
+                        style={tw`w-30 h-30 ios:mx-4`}
+                    />
+                </View>
                 <GooglePlacesAutocomplete
                     styles={{
                         textInputContainer: tw`ios:px-3`,

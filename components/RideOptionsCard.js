@@ -1,41 +1,25 @@
 import { View, Text, SafeAreaView, TouchableOpacity, FlatList, Image } from 'react-native';
-import React, { useState } from 'react'
+import React, { useState, useLayoutEffect } from 'react'
 import tw from 'twrnc';
 import { Icon } from '@rneui/base';
 import { useNavigation } from '@react-navigation/native';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectTravelTimeInfo, setDestination } from '../features/navSlice';
+import { useSelector } from 'react-redux';
+import { selectTravelTimeInfo } from '../features/navSlice';
+import sanityClient, { urlFor } from '../sanityClient';
 
 const RideOptionsCard = () => {
     const rideOptionParameter = useSelector(selectTravelTimeInfo);
-    const [rideOptions, setRideOptions] = useState([
-        {
-            id: 1,
-            title: "Thrift",
-            multiplier: 0.75,
-            image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9K3laJ6MRc_frPlCd9NLbe5J-syR5gAdFGkF_Sp8dortSM7-myLB8nb3MqeSIGUFYcA8&usqp=CAU",
-        },
-        {
-            id: 2,
-            title: "Modern",
-            multiplier: 1,
-            image: "https://links.papareact.com/3pn",
-        },
-        {
-            id: 3,
-            title: "Utility",
-            multiplier: 1.25,
-            image: "https://links.papareact.com/5w8",
-        },
-        {
-            id: 4,
-            title: "Luxury",
-            multiplier: 1.5,
-            image: "https://links.papareact.com/7pf",
-        },
-    ]);
+    useLayoutEffect(() => {
+        sanityClient.fetch(
+            ` *[_type == "ride"] `
+        ).then((resp) => {
+            setRideOptions(resp);
+        }).catch((err) => {
+            console.warn("Could not fetch ride options");
+        })
+    }, [])
+    const [rideOptions, setRideOptions] = useState([]);
     const navigation = useNavigation();
-    const dispatch = useDispatch();
     const [selectedRide, setSelectedRide] = useState(null);
     return (
         <SafeAreaView style={tw`bg-white flex-1 -mt-2`}>
@@ -48,25 +32,29 @@ const RideOptionsCard = () => {
                 >
                     <Icon name="chevron-left" type='font-awesome' />
                 </TouchableOpacity>
-                <Text style={tw`text-center py-5 text-xl`}>Select a Ride</Text>
+                <Text style={tw`text-center py-5 text-xl`}>Select a Ride: {rideOptionParameter?.distance?.text}</Text>
             </View>
             <FlatList
-                data={rideOptions}
-                keyExtractor={(item) => item.id}
-                renderItem={({ item: { id, title, multiplier, image }, item }) => (
-                    <TouchableOpacity onPress={() => setSelectedRide(item)} style={[tw`flex-row justify-between items-center px-8 pb-5 mb-2`, id === selectedRide?.id ? tw`bg-gray-200` : tw``]}>
+                data={rideOptions.sort((a, b) => {
+                    return parseFloat(a.multiplier) - parseFloat(b.multiplier);
+                })}
+                keyExtractor={(item) => item._id}
+                renderItem={({ item: { _id, vehicle_type, multiplier, image }, item }) => (
+                    <TouchableOpacity onPress={() => setSelectedRide(item)} style={
+                        [tw`flex-row justify-between items-center px-8 pb-5 mb-2`, _id === selectedRide?._id ? tw`bg-gray-200` : tw``]
+                    }>
                         <Image
                             source={{
-                                uri: image
+                                uri: urlFor(image).url()
                             }}
                             resizeMode='cover'
                             style={tw`h-25 w-35`}
                         />
                         <View style={tw`-ml-6`}>
-                            <Text style={tw`text-xl font-semibold`}>{title}</Text>
+                            <Text style={tw`text-xl font-semibold`}>{vehicle_type}</Text>
                             <Text>Travel time: {rideOptionParameter?.duration?.text}</Text>
                         </View>
-                        <Text style={tw`text-xl`}>₹ {(rideOptionParameter?.distance?.value) * multiplier}</Text>
+                        <Text style={tw`text-xl`}>₹ {((rideOptionParameter?.distance?.value / 100) * multiplier).toFixed(2)}</Text>
                     </TouchableOpacity>
                 )
                 }
@@ -77,7 +65,7 @@ const RideOptionsCard = () => {
                     disabled={!selectedRide}
                 >
                     <Text style={tw`text-center text-white text-xl`}>
-                        Choose {selectedRide?.title}
+                        Choose {selectedRide?.vehicle_type}
                     </Text>
                 </TouchableOpacity>
             </View >

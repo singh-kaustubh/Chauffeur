@@ -1,5 +1,5 @@
 import { View, Text, FlatList, TouchableOpacity, Image } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import tw from 'twrnc'
 import { Icon } from '@rneui/base';
 import { useNavigation } from '@react-navigation/native';
@@ -9,7 +9,7 @@ import { selectOrigin } from '../features/navSlice';
 const NavOptions = () => {
     const navigation = useNavigation();
     const origin = useSelector(selectOrigin);
-    const data = [
+    const [navOptions, setNavOptions] = useState([
         {
             id: "1",
             title: "Rides",
@@ -22,10 +22,10 @@ const NavOptions = () => {
             image: "https://cdn-icons-png.flaticon.com/512/2830/2830175.png",
             screen: "Map",
         }
-    ];
+    ])
     return (
         <FlatList
-            data={data}
+            data={navOptions}
             style={tw`mx-auto`}
             horizontal={true}
             keyExtractor={(item) => item.id}

@@ -33,13 +33,13 @@
     "react-native-vector-icons": "^10.0.0",
     "react-native-web": "~0.19.6",
     "react-redux": "^8.1.2",
-    "twrnc": "^3.6.4",
-    "yarn": "^1.22.19"
+    "twrnc": "^3.6.4"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
     "@babel/plugin-transform-flow-strip-types": "^7.22.5",
-    "@babel/plugin-transform-private-methods": "^7.22.5"
+    "@babel/plugin-transform-private-methods": "^7.22.5",
+    "yarn": "^1.22.19"
   },
   "private": true
 }
