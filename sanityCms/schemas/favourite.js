@@ -6,6 +6,13 @@ export default defineConfig({
     type: 'document',
     fields: [
         defineField({
+            name: 'user_id',
+            title: 'User',
+            type: 'reference',
+            to: [{ type: 'user' }],
+            validation: (Rule) => Rule.required(),
+        }),
+        defineField({
             name: 'name',
             title: 'Name of place',
             type: 'string',
@@ -22,6 +29,6 @@ export default defineConfig({
             title: 'Address of the place',
             type: 'string',
             validation: (Rule) => Rule.required()
-        })
+        }),
     ]
 })

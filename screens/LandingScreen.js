@@ -8,7 +8,7 @@ import { useDispatch } from 'react-redux';
 import { setOrigin, setDestination, setTravelTimeInfo } from '../features/navSlice';
 import NavFavourite from '../components/NavFavourites';
 
-const HomeScreen = () => {
+const Landing = () => {
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(setOrigin(null));
@@ -58,4 +58,4 @@ const HomeScreen = () => {
     )
 }
 
-export default HomeScreen
+export default Landing
